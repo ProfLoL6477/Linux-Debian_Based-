@@ -30,7 +30,7 @@ Make the script executable by running the following command:
   chmod +x ScriptName.sh
   
   # Run the script
-  ./ScriptName.sh
+  sudo ./ScriptName.sh
 ```
 
 Available Scripts
