@@ -50,6 +50,8 @@ Currently, the repository contains the following scripts:
   
   Octave_Install.sh - Installs GNU Octave, a software for numerical computations.
 
+  Ubuntu_LTS_Upgrade.sh - Upgrade Ubuntu to the next LTS release.
+
   Ubuntu_Upgrade.sh - Upgrade Ubuntu to the next available release (not necessarily the next LTS release).
   
   VSCode_Install.sh - Installs Visual Studio Code, a popular code editor.
