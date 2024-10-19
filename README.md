@@ -5,13 +5,15 @@ Install scripts to easily setup your new linux dektop!
 
 This repository contains shell scripts that help you quickly set up essential software on Debian-based Linux distributions (such as Ubuntu, Linux Mint, etc.).
 
-Getting Started
 
-Prerequisites
+Getting Started:
+
+Prerequisites:
 
 Ensure your system is running a Debian-based Linux distribution. If you're using a different distribution, some commands may vary.
 
-Downloading and Running a Script
+
+Downloading and Running a Script:
 
   Download the script you need directly from this repository. Click on the script file (e.g., VSCode_Install.sh), then click the "Download" button or right-click on the "Raw" button and select "Save      Link As" to save the file.
 
@@ -25,6 +27,7 @@ Downloading and Running a Script
 ```
 
   Alternative: You can right-click on the folder in your file explorer and select "Open in Terminal" to open a terminal directly in that folder.
+  
 
 Make the script executable by running the following command:
 
@@ -36,7 +39,8 @@ Make the script executable by running the following command:
   sudo ./ScriptName.sh
 ```
 
-Available Scripts
+
+Available Scripts:
 
 Currently, the repository contains the following scripts:
 
@@ -47,17 +51,18 @@ Currently, the repository contains the following scripts:
   Grub_Customizer_Install.sh - Installs GRUB Customizer, a tool for managing the GRUB bootloader.
   
   VSCode_Install.sh - Installs Visual Studio Code, a popular code editor.
+  
 
-More Scripts Coming Soon
+More Scripts Coming Soon:
 
 This repository will be updated with more scripts to automate the installation of other useful tools and software. Keep checking back for updates!
-Author
 
   AUTHOR: Warad Teni
   MOBILE: (+91) 91463 50289
   EMAIL: waradteni@gmail.com
+  
 
-Contributing
+Contributing:
 
 Feel free to contribute by adding more useful scripts or improving the existing ones. Here's how you can contribute:
 
