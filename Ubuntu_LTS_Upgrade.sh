@@ -55,7 +55,7 @@ check_success "LTS upgrade configuration"
 
 # Step 7: Perform a release upgrade
 echo "Checking for distribution release upgrade..."
-sudo do-release-upgrade -y
+sudo do-release-upgrade
 check_success "Release upgrade"
 
 # Step 8: Reboot the system
