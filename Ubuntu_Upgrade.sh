@@ -45,7 +45,7 @@ sudo apt install update-manager-core -y
 
 # Step 6: Perform a release upgrade
 echo "Checking for distribution release upgrade..."
-sudo do-release-upgrade -y
+sudo do-release-upgrade
 
 # Step 7: Reboot the system
 echo "Rebooting the system..."
