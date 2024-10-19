@@ -45,10 +45,12 @@ Available Scripts:
 Currently, the repository contains the following scripts:
 
   BootClean.sh - A basic system maintenance script.
+
+  Grub_Customizer_Install.sh - Installs GRUB Customizer, a tool for managing the GRUB bootloader.
   
   Octave_Install.sh - Installs GNU Octave, a software for numerical computations.
-  
-  Grub_Customizer_Install.sh - Installs GRUB Customizer, a tool for managing the GRUB bootloader.
+
+  Ubuntu_Upgrade.sh - Upgrades Ubuntu to the next release.
   
   VSCode_Install.sh - Installs Visual Studio Code, a popular code editor.
   
