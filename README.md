@@ -4,10 +4,13 @@ Install scripts to easily setup your new linux dektop!
 # Linux-Debian-Based Setup Scripts
 
 This repository contains shell scripts that help you quickly set up essential software on Debian-based Linux distributions (such as Ubuntu, Linux Mint, etc.).
+
 Getting Started
+
 Prerequisites
 
 Ensure your system is running a Debian-based Linux distribution. If you're using a different distribution, some commands may vary.
+
 Downloading and Running a Script
 
   Download the script you need directly from this repository. Click on the script file (e.g., VSCode_Install.sh), then click the "Download" button or right-click on the "Raw" button and select "Save      Link As" to save the file.
@@ -38,7 +41,11 @@ Available Scripts
 Currently, the repository contains the following scripts:
 
   BootClean.sh - A basic system maintenance script.
+  
   Octave_Install.sh - Installs GNU Octave, a software for numerical computations.
+  
+  Grub_Customizer_Install.sh - Installs GRUB Customizer, a tool for managing the GRUB bootloader.
+  
   VSCode_Install.sh - Installs Visual Studio Code, a popular code editor.
 
 More Scripts Coming Soon
