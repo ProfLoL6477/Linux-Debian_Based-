@@ -77,6 +77,7 @@ check_success "Visual Studio Code installation"
 # Install LibreWolf
 echo "Installing extrepo and enabling LibreWolf repository..."
 sudo apt install extrepo -y && sudo extrepo enable librewolf
+sudo apt update
 check_success "extrepo and LibreWolf repository setup"
 echo "Installing LibreWolf..."
 sudo apt install librewolf -y
