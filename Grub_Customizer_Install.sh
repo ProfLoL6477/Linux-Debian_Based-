@@ -46,6 +46,5 @@ echo "Launching Grub Customizer..."
 grub-customizer
 
 echo "Grub Customizer installation complete!"
-grub-customizer
 
 #****************************************************************#
