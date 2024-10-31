@@ -33,10 +33,10 @@ Make the script executable by running the following command:
 
 ```bash
   # Make the script executable
-  chmod +x ScriptName.sh
+  chmod +x script_name.sh
   
   # Run the script
-  sudo ./ScriptName.sh
+  sudo ./script_name.sh
 ```
 
 
@@ -44,17 +44,19 @@ Available Scripts:
 
 Currently, the repository contains the following scripts:
 
-  BootClean.sh - A basic system maintenance script.
+  boot_clean.sh - A basic system maintenance script.
 
-  Grub_Customizer_Install.sh - Installs GRUB Customizer, a tool for managing the GRUB bootloader.
+  debian_setup.sh - Automated basic setup for Debian based systems.
+
+  grub_customizer_install.sh - Installs GRUB Customizer, a tool for managing the GRUB bootloader.
   
-  Octave_Install.sh - Installs GNU Octave, a software for numerical computations.
+  octave_install.sh - Installs GNU Octave, a software for numerical computations.
 
-  Ubuntu_LTS_Upgrade.sh - Upgrade Ubuntu to the next LTS release.
+  ubuntu_lts_upgrade.sh - Upgrade Ubuntu to the next LTS release.
 
-  Ubuntu_Upgrade.sh - Upgrade Ubuntu to the next available release (not necessarily the next LTS release).
+  ubuntu_upgrade.sh - Upgrade Ubuntu to the next available release (not necessarily the next LTS release).
   
-  VSCode_Install.sh - Installs Visual Studio Code, a popular code editor.
+  vscode_install.sh - Installs Visual Studio Code, a popular code editor.
   
 
 More Scripts Coming Soon:
