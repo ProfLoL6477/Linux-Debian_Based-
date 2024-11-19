@@ -115,6 +115,7 @@ check_success "GUFW firewall enabled"
 # Install and set up Grub Customizer
 echo "Adding Grub Customizer PPA and installing..."
 sudo add-apt-repository ppa:danielrichter2007/grub-customizer -y
+sudo apt update
 check_success "Grub Customizer PPA added"
 sudo apt install grub-customizer -y
 check_success "Grub Customizer installation"
