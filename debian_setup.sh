@@ -122,7 +122,7 @@ check_success "Grub Customizer installation"
 
 # Remove unnecessary packages
 echo "Performing system cleanup..."
-sudo apt autoremove -y
+sudo apt clean && sudo apt autoremove -y
 check_success "System cleanup"
 
 # Launch Grub Customizer and Timeshift GUI for initial configuration
