@@ -42,8 +42,8 @@ check_success "Flathub Repository addition"
 # Pre-accept EULA for ubuntu-restricted-extras to avoid user interaction
 echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
 
-# Install Synaptic, VLC, Stacer, GParted, Htop, Neofetch, Timeshift, GUFW, and Ubuntu Restricted Extras
-for package in synaptic vlc stacer gparted htop neofetch timeshift gufw ubuntu-restricted-extras; do
+# Install Synaptic, VLC, Stacer, GParted, Kitty, Htop, Ranger, Neofetch, Timeshift, GUFW, and Ubuntu Restricted Extras
+for package in synaptic vlc stacer gparted kitty htop ranger neofetch timeshift gufw ubuntu-restricted-extras; do
     echo "Installing $package..."
     sudo apt install "$package" -y
     check_success "$package installation"
@@ -91,6 +91,13 @@ echo "Setting LibreWolf as the default browser..."
 sudo update-alternatives --set x-www-browser /usr/bin/librewolf
 xdg-settings set default-web-browser librewolf.desktop
 check_success "LibreWolf set as default browser"
+
+# Set Kitty as the default terminal emulator
+sudo update-alternatives --install /usr/bin/x-terminal-emulator kitty /usr/bin/kitty 1
+sudo update-alternatives --set x-terminal-emulator /usr/bin/kitty
+
+# Add a fallback to ensure that the 'kitty' command works
+sudo update-alternatives --install /usr/bin/kitty kitty /usr/bin/kitty 1
 
 # Set OnlyOffice as default for document types
 echo "Setting OnlyOffice as default for various document types..."
