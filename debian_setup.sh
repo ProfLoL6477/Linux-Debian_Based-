@@ -42,8 +42,8 @@ check_success "Flathub Repository addition"
 # Pre-accept EULA for ubuntu-restricted-extras to avoid user interaction
 echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
 
-# Install Synaptic, VLC, Stacer, GParted, Kitty, Htop, Ranger, Neofetch, Timeshift, GUFW, and Ubuntu Restricted Extras
-for package in synaptic vlc stacer gparted kitty htop ranger neofetch timeshift gufw ubuntu-restricted-extras; do
+# Install Synaptic, VLC, Stacer, GParted, Kitty, Htop, Ranger, Vim, Neovim, Neofetch, Timeshift, GUFW, and Ubuntu Restricted Extras
+for package in synaptic vlc stacer gparted kitty htop ranger vim neovim neofetch timeshift gufw ubuntu-restricted-extras; do
     echo "Installing $package..."
     sudo apt install "$package" -y
     check_success "$package installation"
