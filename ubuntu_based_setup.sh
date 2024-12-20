@@ -4,7 +4,7 @@
 # MOBILE  : (+91) 91463 50289
 # EMAIL   : waradteni@gmail.com
 
-#******************************************************************************************************************************#
+#**************************************************************************************************************************************************************************#
 
 # Redirect all output (stdout and stderr) to a log file and the terminal
 exec > >(tee -i setup_script.log) 2>&1
@@ -28,6 +28,208 @@ check_success() {
         exit 1
     fi
     echo "$1 succeeded."
+}
+
+# Function to check if /home is a separate partition
+is_home_separate() {
+    # Check the mounted partitions for /home
+    if lsblk -o MOUNTPOINT,NAME | grep -q "/home"; then
+        return 0 # /home is mounted on a separate partition
+    else
+        return 1 # /home is not separate
+    fi
+}
+
+# Configure Timeshift backup location and settings
+configure_timeshift() {
+    # Check if /home is a separate partition
+    if is_home_separate; then
+        backup_location="/home/timeshift"
+        echo "/home is a separate partition. Backups will be stored in /home."
+    else
+        backup_location="/timeshift"
+        echo "/home is not a separate partition. Backups will be stored in /."
+    fi
+
+    # Create the backup directory if it doesn't exist
+    sudo mkdir -p "$backup_location"
+    sudo chown root:root "$backup_location"
+    sudo chmod 755 "$backup_location"
+
+    # Set the backup location in Timeshift
+    echo "Setting up Timeshift backup location to $backup_location..."
+    sudo timeshift --create --comments "Initial Backup" --tags "daily" --backup-device "$backup_location"
+    check_success "Timeshift initial backup setup"
+
+    # Set the backup schedule (e.g., daily)
+    echo "Setting backup schedule to daily..."
+    sudo timeshift --schedule --add --daily
+    check_success "Daily backup schedule set"
+
+    # Set retention policy to keep 5 backups in total
+    echo "Setting backup retention policy to keep 5 backups..."
+    sudo timeshift --max-daily 5 --max-weekly 5 --max-monthly 5 --max-yearly 5
+    check_success "Backup retention policy set to keep 5 backups"
+
+    # Enable Timeshift for automatic backups (using systemd)
+    echo "Enabling Timeshift for automatic backups..."
+    sudo systemctl enable timeshift.timer
+    sudo systemctl start timeshift.timer
+    check_success "Timeshift automatic backup enabled"
+}
+
+# Function to detect if the system is using GRUB
+is_grub_installed() {
+    if [ -d "/boot/grub" ]; then
+        return 0  # GRUB is found
+    else
+        return 1  # GRUB is not found
+    fi
+}
+
+# Function to detect if the system is using systemd-boot
+is_systemd_boot_installed() {
+    if [ -d "/boot/efi/loader/entries" ]; then
+        return 0  # systemd-boot is found
+    else
+        return 1  # systemd-boot is not found
+    fi
+}
+
+# Function to install Grub Customizer
+install_grub_customizer() {
+    echo "Adding Grub Customizer PPA and installing..."
+    sudo add-apt-repository ppa:danielrichter2007/grub-customizer -y
+    sudo apt update
+    check_success "Grub Customizer PPA added"
+    sudo apt install grub-customizer -y
+    check_success "Grub Customizer installation"
+}
+
+# Function to clean up GRUB entries (Windows, recovery, memtest, and UEFI firmware)
+cleanup_grub() {
+    echo "Cleaning up GRUB entries..."
+
+    # Check if Windows is installed
+    if grep -q "Windows" /boot/grub/grub.cfg; then
+        echo "Windows detected. Renaming Windows Boot Manager..."
+        sudo grub-customizer --no-gui --set-entry-name "Windows Boot Manager" "Windows"
+        check_success "Windows Boot Manager renamed"
+
+        # Check if Windows Recovery Environment is installed
+        if grep -q "Windows Recovery Environment" /boot/grub/grub.cfg; then
+            echo "Windows Recovery Environment entry detected. Disabling it..."
+            sudo grub-customizer --no-gui --disable-entry "Windows Recovery Environment"
+            check_success "Windows Recovery Environment entry disabled"
+        else
+            echo "No Windows Recovery Environment entry found. Skipping removal."
+        fi
+    else
+        echo "No Windows entry found. Skipping Windows-related actions."
+    fi
+
+    # Check if the recovery entry exists before trying to remove it
+    if grep -q "Ubuntu recovery mode" /boot/grub/grub.cfg; then
+        echo "Ubuntu recovery mode entry detected. Disabling it..."
+        sudo grub-customizer --no-gui --disable-entry "Ubuntu recovery mode"
+        check_success "Ubuntu recovery mode entry disabled"
+    else
+        echo "No Ubuntu recovery mode entry found. Skipping removal."
+    fi
+
+    # Check if memtest entry exists (searching for any entry containing "memtest" or "memtest86+")
+    if grep -qi "memtest" /boot/grub/grub.cfg; then
+        echo "Memtest entry detected. Disabling it..."
+        sudo grub-customizer --no-gui --disable-entry "memtest*"
+        check_success "Memtest entry disabled"
+    else
+        echo "No Memtest entry found. Skipping removal."
+    fi
+
+    # Check if UEFI Firmware Settings entry exists and remove it
+    if grep -q "UEFI Firmware Settings" /boot/grub/grub.cfg; then
+        echo "UEFI Firmware Settings entry detected. Disabling it..."
+        sudo grub-customizer --no-gui --disable-entry "UEFI Firmware Settings"
+        check_success "UEFI Firmware Settings entry disabled"
+    else
+        echo "No UEFI Firmware Settings entry found. Skipping removal."
+    fi
+
+    # Update GRUB to apply changes
+    echo "Updating GRUB configuration..."
+    sudo update-grub
+    check_success "GRUB configuration updated"
+}
+
+# Function to clean up systemd-boot entries (Windows, recovery, memtest, and UEFI firmware)
+cleanup_systemd_boot() {
+    echo "Cleaning up systemd-boot entries..."
+
+    # Check for Windows entry in systemd-boot
+    if [ -f "/boot/efi/loader/entries/windows*.conf" ]; then
+        echo "Windows entry detected. Renaming Windows Boot Manager..."
+        sudo sed -i 's/Windows Boot Manager/Windows/' /boot/efi/loader/entries/windows*.conf
+        check_success "Windows Boot Manager renamed"
+
+        # Check if Windows Recovery Environment entry exists and remove it
+        if [ -f "/boot/efi/loader/entries/windows-recovery*.conf" ]; then
+            echo "Windows Recovery Environment entry detected. Removing it..."
+            sudo rm -f /boot/efi/loader/entries/windows-recovery*.conf
+            check_success "Windows Recovery Environment entry removed"
+        else
+            echo "No Windows Recovery Environment entry found. Skipping removal."
+        fi
+    else
+        echo "No Windows entry found. Skipping Windows-related actions."
+    fi
+
+    # Check if the recovery entry exists before trying to remove it in systemd-boot
+    if [ -f "/boot/efi/loader/entries/ubuntu-recovery*.conf" ]; then
+        echo "Ubuntu recovery entry detected. Removing it..."
+        sudo rm -f /boot/efi/loader/entries/ubuntu-recovery*.conf
+        check_success "Ubuntu recovery entry removed"
+    else
+        echo "No Ubuntu recovery entry found. Skipping removal."
+    fi
+
+    # Check if memtest entry exists and remove it in systemd-boot (search for any entry with "memtest" in the name)
+    if [ -f "/boot/efi/loader/entries/*memtest*.conf" ]; then
+        echo "Memtest entry detected. Removing it..."
+        sudo rm -f /boot/efi/loader/entries/*memtest*.conf
+        check_success "Memtest entry removed"
+    else
+        echo "No Memtest entry found. Skipping removal."
+    fi
+
+    # Check if UEFI Firmware Settings entry exists and remove it in systemd-boot
+    if [ -f "/boot/efi/loader/entries/*uefi-firmware-settings*.conf" ]; then
+        echo "UEFI Firmware Settings entry detected. Removing it..."
+        sudo rm -f /boot/efi/loader/entries/*uefi-firmware-settings*.conf
+        check_success "UEFI Firmware Settings entry removed"
+    else
+        echo "No UEFI Firmware Settings entry found. Skipping removal."
+    fi
+
+    # Rebuild systemd-boot entries (if needed)
+    echo "Rebuilding systemd-boot entries..."
+    sudo bootctl update
+    check_success "Systemd-boot entries updated"
+}
+
+# Function to install Grub Customizer only if GRUB is installed
+automate_boot_cleanup() {
+    echo "Detecting bootloader..."
+
+    if is_grub_installed; then
+        echo "GRUB detected. Proceeding with GRUB cleanup and Grub Customizer installation..."
+        install_grub_customizer
+        cleanup_grub
+    elif is_systemd_boot_installed; then
+        echo "systemd-boot detected. Proceeding with systemd-boot cleanup..."
+        cleanup_systemd_boot
+    else
+        echo "No recognized bootloader found. Skipping bootloader cleanup."
+    fi
 }
 
 # Update package list and upgrade installed packages
@@ -143,26 +345,32 @@ sudo ufw enable
 check_success "GUFW firewall enabled"
 
 # Install and set up Grub Customizer
-echo "Adding Grub Customizer PPA and installing..."
-sudo add-apt-repository ppa:danielrichter2007/grub-customizer -y
-sudo apt update
-check_success "Grub Customizer PPA added"
-sudo apt install grub-customizer -y
-check_success "Grub Customizer installation"
+# echo "Adding Grub Customizer PPA and installing..."
+# sudo add-apt-repository ppa:danielrichter2007/grub-customizer -y
+# sudo apt update
+# check_success "Grub Customizer PPA added"
+# sudo apt install grub-customizer -y
+# check_success "Grub Customizer installation"
 
 # Remove unnecessary packages
 echo "Performing system cleanup..."
 sudo apt clean && sudo apt autoremove --purge -y
 check_success "System cleanup"
 
-# Launch Grub Customizer and Timeshift GUI for initial configuration
+# Boot Cleanup
+automate_boot_cleanup
+
+# Timeshift backup configuration
+configure_timeshift
+
+# Launch Grub Customizer for further configuration
 if [[ $DISPLAY ]]; then
     echo "Launching Grub Customizer..."
     sudo grub-customizer
     check_success "Grub Customizer setup completed"
-    echo "Launching Timeshift GUI for initial setup..."
-    sudo timeshift-gtk
-    check_success "Timeshift GUI launched for configuration"
+    # echo "Launching Timeshift GUI for initial setup..."
+    # sudo timeshift-gtk
+    # check_success "Timeshift GUI launched for configuration"
 else
     echo "Skipping GUI-based applications as no graphical session is detected."
 fi
@@ -176,4 +384,4 @@ else
     echo "You can reboot later to apply the changes."
 fi
 
-#******************************************************************************************************************************#
+#**************************************************************************************************************************************************************************#
