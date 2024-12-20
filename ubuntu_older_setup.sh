@@ -100,9 +100,9 @@ is_systemd_boot_installed() {
 install_grub_customizer() {
     echo "Adding Grub Customizer PPA and installing..."
     sudo add-apt-repository ppa:danielrichter2007/grub-customizer -y
-    sudo nala update
+    sudo apt update
     check_success "Grub Customizer PPA added"
-    sudo nala install grub-customizer -y
+    sudo apt install grub-customizer -y
     check_success "Grub Customizer installation"
 }
 
@@ -237,19 +237,14 @@ echo "Updating package list and upgrading packages..."
 sudo apt update && sudo apt upgrade -y
 check_success "System update and upgrade"
 
-# Install nala a front end for apt
-echo "Installing nala..."
-sudo apt install nala -y
-check_success "Install nala"
-
 # Install essential packages
 echo "Installing required packages: apt-transport-https and wget..."
-sudo nala install apt-transport-https wget -y
+sudo apt install apt-transport-https wget -y
 check_success "apt-transport-https and wget installation"
 
 # Install Flatpak and add Flathub repository
 echo "Installing Flatpak..."
-sudo nala install flatpak -y
+sudo apt install flatpak -y
 check_success "Flatpak installation"
 echo "Adding Flathub Repository..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -261,7 +256,7 @@ echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select t
 # Install Synaptic, VLC, Stacer, GParted, Kitty, Htop, Ranger, Vim, Neovim, Neofetch, Timeshift, GUFW, and Ubuntu Restricted Extras
 for package in synaptic vlc stacer gparted kitty htop ranger vim neovim neofetch timeshift gufw ubuntu-restricted-extras; do
     echo "Installing $package..."
-    sudo nala install "$package" -y
+    sudo apt install "$package" -y
     check_success "$package installation"
 done
 
@@ -276,7 +271,7 @@ flatpak install --noninteractive flathub org.onlyoffice.desktopeditors -y
 check_success "ONLYOFFICE installation"
 echo "Installing Microsoft TrueType fonts..."
 # echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
-sudo nala install ttf-mscorefonts-installer -y
+sudo apt install ttf-mscorefonts-installer -y
 check_success "Microsoft TrueType fonts installation"
 
 # Install Visual Studio Code
@@ -291,18 +286,18 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packa
 # echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
 check_success "Visual Studio Code repository addition"
 echo "Installing Visual Studio Code..."
-sudo nala update && sudo nala install code -y
+sudo apt update && sudo apt install code -y
 check_success "Visual Studio Code installation"
 # rm microsoft.gpg
 # check_success "Removing microsoft GPG key"
 
 # Install LibreWolf
 echo "Installing extrepo and enabling LibreWolf repository..."
-sudo nala install extrepo -y && sudo extrepo enable librewolf
-sudo nala update
+sudo apt install extrepo -y && sudo extrepo enable librewolf
+sudo apt update
 check_success "extrepo and LibreWolf repository setup"
 echo "Installing LibreWolf..."
-sudo nala install librewolf -y
+sudo apt install librewolf -y
 check_success "LibreWolf installation"
 
 # Ensure Firefox is removed and LibreWolf is set as default browser
@@ -310,7 +305,7 @@ if ! command -v librewolf &>/dev/null; then
     echo "LibreWolf installation failed. Retaining Firefox as the default browser."
 else
     echo "Uninstalling Firefox..."
-    sudo nala remove --purge firefox -y
+    sudo apt remove --purge firefox -y
     check_success "Firefox uninstallation"
     sudo rm -rf ~/.mozilla
     check_success "Cleaning residual configuration files"
@@ -359,7 +354,7 @@ check_success "GUFW firewall enabled"
 
 # Remove unnecessary packages
 echo "Performing system cleanup..."
-sudo nala clean && sudo nala autoremove --purge -y
+sudo apt clean && sudo apt autoremove --purge -y
 check_success "System cleanup"
 
 # Boot Cleanup
