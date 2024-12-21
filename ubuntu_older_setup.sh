@@ -107,66 +107,66 @@ is_systemd_boot_installed() {
 install_grub_customizer() {
     echo "Adding Grub Customizer PPA and installing..."
     sudo add-apt-repository ppa:danielrichter2007/grub-customizer -y
-    sudo apt update
+    sudo apt-get update
     check_success "Grub Customizer PPA added"
-    sudo apt install grub-customizer -y
+    sudo apt-get install grub-customizer -y
     check_success "Grub Customizer installation"
 }
 
-# Function to clean up GRUB entries (Windows, recovery, memtest, and UEFI firmware)
-cleanup_grub() {
-    echo "Cleaning up GRUB entries..."
+# # Function to clean up GRUB entries (Windows, recovery, memtest, and UEFI firmware)
+# cleanup_grub() {
+#     echo "Cleaning up GRUB entries..."
 
-    # Check if Windows is installed
-    if grep -q "Windows" /boot/grub/grub.cfg; then
-        echo "Windows detected. Renaming Windows Boot Manager..."
-        sudo grub-customizer --no-gui --set-entry-name "Windows Boot Manager" "Windows"
-        check_success "Windows Boot Manager renamed"
+#     # Check if Windows is installed
+#     if grep -q "Windows" /boot/grub/grub.cfg; then
+#         echo "Windows detected. Renaming Windows Boot Manager..."
+#         sudo grub-customizer --no-gui --set-entry-name "Windows Boot Manager" "Windows"
+#         check_success "Windows Boot Manager renamed"
 
-        # Check if Windows Recovery Environment is installed
-        if grep -q "Windows Recovery Environment" /boot/grub/grub.cfg; then
-            echo "Windows Recovery Environment entry detected. Disabling it..."
-            sudo grub-customizer --no-gui --disable-entry "Windows Recovery Environment"
-            check_success "Windows Recovery Environment entry disabled"
-        else
-            echo "No Windows Recovery Environment entry found. Skipping removal."
-        fi
-    else
-        echo "No Windows entry found. Skipping Windows-related actions."
-    fi
+#         # Check if Windows Recovery Environment is installed
+#         if grep -q "Windows Recovery Environment" /boot/grub/grub.cfg; then
+#             echo "Windows Recovery Environment entry detected. Disabling it..."
+#             sudo grub-customizer --no-gui --disable-entry "Windows Recovery Environment"
+#             check_success "Windows Recovery Environment entry disabled"
+#         else
+#             echo "No Windows Recovery Environment entry found. Skipping removal."
+#         fi
+#     else
+#         echo "No Windows entry found. Skipping Windows-related actions."
+#     fi
 
-    # Check if the recovery entry exists before trying to remove it
-    if grep -q "Ubuntu recovery mode" /boot/grub/grub.cfg; then
-        echo "Ubuntu recovery mode entry detected. Disabling it..."
-        sudo grub-customizer --no-gui --disable-entry "Ubuntu recovery mode"
-        check_success "Ubuntu recovery mode entry disabled"
-    else
-        echo "No Ubuntu recovery mode entry found. Skipping removal."
-    fi
+#     # Check if the recovery entry exists before trying to remove it
+#     if grep -q "Ubuntu recovery mode" /boot/grub/grub.cfg; then
+#         echo "Ubuntu recovery mode entry detected. Disabling it..."
+#         sudo grub-customizer --no-gui --disable-entry "Ubuntu recovery mode"
+#         check_success "Ubuntu recovery mode entry disabled"
+#     else
+#         echo "No Ubuntu recovery mode entry found. Skipping removal."
+#     fi
 
-    # Check if memtest entry exists (searching for any entry containing "memtest" or "memtest86+")
-    if grep -qi "memtest" /boot/grub/grub.cfg; then
-        echo "Memtest entry detected. Disabling it..."
-        sudo grub-customizer --no-gui --disable-entry "memtest*"
-        check_success "Memtest entry disabled"
-    else
-        echo "No Memtest entry found. Skipping removal."
-    fi
+#     # Check if memtest entry exists (searching for any entry containing "memtest" or "memtest86+")
+#     if grep -qi "memtest" /boot/grub/grub.cfg; then
+#         echo "Memtest entry detected. Disabling it..."
+#         sudo grub-customizer --no-gui --disable-entry "memtest*"
+#         check_success "Memtest entry disabled"
+#     else
+#         echo "No Memtest entry found. Skipping removal."
+#     fi
 
-    # Check if UEFI Firmware Settings entry exists and remove it
-    if grep -q "UEFI Firmware Settings" /boot/grub/grub.cfg; then
-        echo "UEFI Firmware Settings entry detected. Disabling it..."
-        sudo grub-customizer --no-gui --disable-entry "UEFI Firmware Settings"
-        check_success "UEFI Firmware Settings entry disabled"
-    else
-        echo "No UEFI Firmware Settings entry found. Skipping removal."
-    fi
+#     # Check if UEFI Firmware Settings entry exists and remove it
+#     if grep -q "UEFI Firmware Settings" /boot/grub/grub.cfg; then
+#         echo "UEFI Firmware Settings entry detected. Disabling it..."
+#         sudo grub-customizer --no-gui --disable-entry "UEFI Firmware Settings"
+#         check_success "UEFI Firmware Settings entry disabled"
+#     else
+#         echo "No UEFI Firmware Settings entry found. Skipping removal."
+#     fi
 
-    # Update GRUB to apply changes
-    echo "Updating GRUB configuration..."
-    sudo update-grub
-    check_success "GRUB configuration updated"
-}
+#     # Update GRUB to apply changes
+#     echo "Updating GRUB configuration..."
+#     sudo update-grub
+#     check_success "GRUB configuration updated"
+# }
 
 # Function to clean up systemd-boot entries (Windows, recovery, memtest, and UEFI firmware)
 cleanup_systemd_boot() {
@@ -230,7 +230,8 @@ automate_boot_cleanup() {
     if is_grub_installed; then
         echo "GRUB detected. Proceeding with GRUB cleanup and Grub Customizer installation..."
         install_grub_customizer
-        cleanup_grub
+        # cleanup_grub
+        sudo grub-customizer
     elif is_systemd_boot_installed; then
         echo "systemd-boot detected. Proceeding with systemd-boot cleanup..."
         cleanup_systemd_boot
@@ -241,17 +242,17 @@ automate_boot_cleanup() {
 
 # Update package list and upgrade installed packages
 echo "Updating package list and upgrading packages..."
-sudo apt update && sudo apt upgrade -y
+sudo apt-get update && sudo apt-get upgrade -y
 check_success "System update and upgrade"
 
 # Install essential packages
-echo "Installing required packages: apt-transport-https and wget..."
-sudo apt install apt-transport-https wget -y
+echo "Installing required packages: apt-get-transport-https and wget..."
+sudo apt-get install apt-transport-https wget -y
 check_success "apt-transport-https and wget installation"
 
 # Install Flatpak and add Flathub repository
 echo "Installing Flatpak..."
-sudo apt install flatpak -y
+sudo apt-get install flatpak -y
 check_success "Flatpak installation"
 echo "Adding Flathub Repository..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -263,7 +264,7 @@ echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select t
 # Install Synaptic, VLC, Stacer, GParted, Kitty, Htop, Ranger, Vim, Neovim, Neofetch, Timeshift, GUFW, and Ubuntu Restricted Extras
 for package in synaptic vlc stacer gparted kitty htop ranger vim neovim neofetch timeshift gufw ubuntu-restricted-extras; do
     echo "Installing $package..."
-    sudo apt install "$package" -y
+    sudo apt-get install "$package" -y
     check_success "$package installation"
 done
 
@@ -278,7 +279,7 @@ flatpak install --noninteractive flathub org.onlyoffice.desktopeditors -y
 check_success "ONLYOFFICE installation"
 echo "Installing Microsoft TrueType fonts..."
 # echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
-sudo apt install ttf-mscorefonts-installer -y
+sudo apt-get install ttf-mscorefonts-installer -y
 check_success "Microsoft TrueType fonts installation"
 
 # Install Visual Studio Code
@@ -293,18 +294,18 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packa
 # echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
 check_success "Visual Studio Code repository addition"
 echo "Installing Visual Studio Code..."
-sudo apt update && sudo apt install code -y
+sudo apt-get update && sudo apt-get install code -y
 check_success "Visual Studio Code installation"
 # rm microsoft.gpg
 # check_success "Removing microsoft GPG key"
 
 # Install LibreWolf
 echo "Installing extrepo and enabling LibreWolf repository..."
-sudo apt install extrepo -y && sudo extrepo enable librewolf
-sudo apt update
+sudo apt-get install extrepo -y && sudo extrepo enable librewolf
+sudo apt-get update
 check_success "extrepo and LibreWolf repository setup"
 echo "Installing LibreWolf..."
-sudo apt install librewolf -y
+sudo apt-get install librewolf -y
 check_success "LibreWolf installation"
 
 # Ensure Firefox is removed and LibreWolf is set as default browser
@@ -312,7 +313,7 @@ if ! command -v librewolf &>/dev/null; then
     echo "LibreWolf installation failed. Retaining Firefox as the default browser."
 else
     echo "Uninstalling Firefox..."
-    sudo apt remove --purge firefox -y
+    sudo apt-get remove --purge firefox -y
     check_success "Firefox uninstallation"
     sudo rm -rf ~/.mozilla
     check_success "Cleaning residual configuration files"
@@ -354,14 +355,14 @@ check_success "GUFW firewall enabled"
 # Install and set up Grub Customizer
 # echo "Adding Grub Customizer PPA and installing..."
 # sudo add-apt-repository ppa:danielrichter2007/grub-customizer -y
-# sudo apt update
+# sudo apt-get update
 # check_success "Grub Customizer PPA added"
-# sudo apt install grub-customizer -y
+# sudo apt-get install grub-customizer -y
 # check_success "Grub Customizer installation"
 
 # Remove unnecessary packages
 echo "Performing system cleanup..."
-sudo apt clean && sudo apt autoremove --purge -y
+sudo apt-get clean && sudo apt-get autoremove --purge -y
 check_success "System cleanup"
 
 # Boot Cleanup
@@ -370,14 +371,14 @@ automate_boot_cleanup
 # Timeshift backup configuration
 configure_timeshift
 
-# Launch Grub Customizer for further configuration
+# Launch Timeshift for manual gui setup
 if [[ $DISPLAY ]]; then
-    echo "Launching Grub Customizer..."
-    sudo grub-customizer
-    check_success "Grub Customizer setup completed"
-    # echo "Launching Timeshift GUI for initial setup..."
-    # sudo timeshift-gtk
-    # check_success "Timeshift GUI launched for configuration"
+    # echo "Launching Grub Customizer..."
+    # sudo grub-customizer
+    # check_success "Grub Customizer setup completed"
+    echo "Launching Timeshift GUI for initial setup..."
+    sudo timeshift-gtk
+    check_success "Timeshift GUI launched for configuration"
 else
     echo "Skipping GUI-based applications as no graphical session is detected."
 fi

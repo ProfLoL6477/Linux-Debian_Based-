@@ -113,60 +113,60 @@ install_grub_customizer() {
     check_success "Grub Customizer installation"
 }
 
-# Function to clean up GRUB entries (Windows, recovery, memtest, and UEFI firmware)
-cleanup_grub() {
-    echo "Cleaning up GRUB entries..."
+# # Function to clean up GRUB entries (Windows, recovery, memtest, and UEFI firmware)
+# cleanup_grub() {
+#     echo "Cleaning up GRUB entries..."
 
-    # Check if Windows is installed
-    if grep -q "Windows" /boot/grub/grub.cfg; then
-        echo "Windows detected. Renaming Windows Boot Manager..."
-        sudo grub-customizer --no-gui --set-entry-name "Windows Boot Manager" "Windows"
-        check_success "Windows Boot Manager renamed"
+#     # Check if Windows is installed
+#     if grep -q "Windows" /boot/grub/grub.cfg; then
+#         echo "Windows detected. Renaming Windows Boot Manager..."
+#         sudo grub-customizer --no-gui --set-entry-name "Windows Boot Manager" "Windows"
+#         check_success "Windows Boot Manager renamed"
 
-        # Check if Windows Recovery Environment is installed
-        if grep -q "Windows Recovery Environment" /boot/grub/grub.cfg; then
-            echo "Windows Recovery Environment entry detected. Disabling it..."
-            sudo grub-customizer --no-gui --disable-entry "Windows Recovery Environment"
-            check_success "Windows Recovery Environment entry disabled"
-        else
-            echo "No Windows Recovery Environment entry found. Skipping removal."
-        fi
-    else
-        echo "No Windows entry found. Skipping Windows-related actions."
-    fi
+#         # Check if Windows Recovery Environment is installed
+#         if grep -q "Windows Recovery Environment" /boot/grub/grub.cfg; then
+#             echo "Windows Recovery Environment entry detected. Disabling it..."
+#             sudo grub-customizer --no-gui --disable-entry "Windows Recovery Environment"
+#             check_success "Windows Recovery Environment entry disabled"
+#         else
+#             echo "No Windows Recovery Environment entry found. Skipping removal."
+#         fi
+#     else
+#         echo "No Windows entry found. Skipping Windows-related actions."
+#     fi
 
-    # Check if the recovery entry exists before trying to remove it
-    if grep -q "Ubuntu recovery mode" /boot/grub/grub.cfg; then
-        echo "Ubuntu recovery mode entry detected. Disabling it..."
-        sudo grub-customizer --no-gui --disable-entry "Ubuntu recovery mode"
-        check_success "Ubuntu recovery mode entry disabled"
-    else
-        echo "No Ubuntu recovery mode entry found. Skipping removal."
-    fi
+#     # Check if the recovery entry exists before trying to remove it
+#     if grep -q "Ubuntu recovery mode" /boot/grub/grub.cfg; then
+#         echo "Ubuntu recovery mode entry detected. Disabling it..."
+#         sudo grub-customizer --no-gui --disable-entry "Ubuntu recovery mode"
+#         check_success "Ubuntu recovery mode entry disabled"
+#     else
+#         echo "No Ubuntu recovery mode entry found. Skipping removal."
+#     fi
 
-    # Check if memtest entry exists (searching for any entry containing "memtest" or "memtest86+")
-    if grep -qi "memtest" /boot/grub/grub.cfg; then
-        echo "Memtest entry detected. Disabling it..."
-        sudo grub-customizer --no-gui --disable-entry "memtest*"
-        check_success "Memtest entry disabled"
-    else
-        echo "No Memtest entry found. Skipping removal."
-    fi
+#     # Check if memtest entry exists (searching for any entry containing "memtest" or "memtest86+")
+#     if grep -qi "memtest" /boot/grub/grub.cfg; then
+#         echo "Memtest entry detected. Disabling it..."
+#         sudo grub-customizer --no-gui --disable-entry "memtest*"
+#         check_success "Memtest entry disabled"
+#     else
+#         echo "No Memtest entry found. Skipping removal."
+#     fi
 
-    # Check if UEFI Firmware Settings entry exists and remove it
-    if grep -q "UEFI Firmware Settings" /boot/grub/grub.cfg; then
-        echo "UEFI Firmware Settings entry detected. Disabling it..."
-        sudo grub-customizer --no-gui --disable-entry "UEFI Firmware Settings"
-        check_success "UEFI Firmware Settings entry disabled"
-    else
-        echo "No UEFI Firmware Settings entry found. Skipping removal."
-    fi
+#     # Check if UEFI Firmware Settings entry exists and remove it
+#     if grep -q "UEFI Firmware Settings" /boot/grub/grub.cfg; then
+#         echo "UEFI Firmware Settings entry detected. Disabling it..."
+#         sudo grub-customizer --no-gui --disable-entry "UEFI Firmware Settings"
+#         check_success "UEFI Firmware Settings entry disabled"
+#     else
+#         echo "No UEFI Firmware Settings entry found. Skipping removal."
+#     fi
 
-    # Update GRUB to apply changes
-    echo "Updating GRUB configuration..."
-    sudo update-grub
-    check_success "GRUB configuration updated"
-}
+#     # Update GRUB to apply changes
+#     echo "Updating GRUB configuration..."
+#     sudo update-grub
+#     check_success "GRUB configuration updated"
+# }
 
 # Function to clean up systemd-boot entries (Windows, recovery, memtest, and UEFI firmware)
 cleanup_systemd_boot() {
@@ -230,7 +230,8 @@ automate_boot_cleanup() {
     if is_grub_installed; then
         echo "GRUB detected. Proceeding with GRUB cleanup and Grub Customizer installation..."
         install_grub_customizer
-        cleanup_grub
+        # cleanup_grub
+        sudo grub-customizer
     elif is_systemd_boot_installed; then
         echo "systemd-boot detected. Proceeding with systemd-boot cleanup..."
         cleanup_systemd_boot
@@ -241,12 +242,12 @@ automate_boot_cleanup() {
 
 # Update package list and upgrade installed packages
 echo "Updating package list and upgrading packages..."
-sudo apt update && sudo apt upgrade -y
+sudo apt-get update && sudo apt-get upgrade -y
 check_success "System update and upgrade"
 
 # Install nala a front end for apt
 echo "Installing nala..."
-sudo apt install nala -y
+sudo apt-get install nala -y
 check_success "Install nala"
 
 # Install essential packages
@@ -375,11 +376,11 @@ automate_boot_cleanup
 # Timeshift backup configuration
 configure_timeshift
 
-# Launch Grub Customizer and Timeshift
+# Launch Timeshift for manual gui setup
 if [[ $DISPLAY ]]; then
-    echo "Launching Grub Customizer..."
-    sudo grub-customizer
-    check_success "Grub Customizer setup completed"
+    # echo "Launching Grub Customizer..."
+    # sudo grub-customizer
+    # check_success "Grub Customizer setup completed"
     echo "Launching Timeshift GUI for initial setup..."
     sudo timeshift-gtk
     check_success "Timeshift GUI launched for configuration"
