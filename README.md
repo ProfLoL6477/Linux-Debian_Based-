@@ -39,7 +39,7 @@ Currently, the repository contains the following scripts:
 - **boot_clean.sh**: A basic system maintenance script.
 - **grub_customizer_install.sh**: Installs GRUB Customizer, a tool for managing the GRUB bootloader.
 - **octave_install.sh**: Installs GNU Octave, a software for numerical computations.
-- **ubuntu_based_setup.sh**: Automated basic setup for Ubuntu-based systems (uses `nala` for newer systems and `apt` for older ones).
+- **ubuntu_based_setup.sh**: Automated basic setup for Ubuntu-based systems (uses `nala` for newer systems).
 - **ubuntu_older_setup.sh**: Setup script specifically for older systems that use `apt`.
 - **ubuntu_lts_upgrade.sh**: Upgrade Ubuntu to the next LTS release.
 - **ubuntu_upgrade.sh**: Upgrade Ubuntu to the next available release (not necessarily the next LTS release).
