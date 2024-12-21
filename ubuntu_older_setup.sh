@@ -30,53 +30,60 @@ check_success() {
     echo "$1 succeeded."
 }
 
-# Function to check if /home is a separate partition
-is_home_separate() {
-    # Check the mounted partitions for /home
-    if lsblk -o MOUNTPOINT,NAME | grep -q "/home"; then
-        return 0 # /home is mounted on a separate partition
-    else
-        return 1 # /home is not separate
-    fi
-}
+# # Function to check if /home is a separate partition
+# is_home_separate() {
+#     # Check the mounted partitions for /home
+#     if lsblk -o MOUNTPOINT,NAME | grep -q "/home"; then
+#         return 0 # /home is mounted on a separate partition
+#     else
+#         return 1 # /home is not separate
+#     fi
+# }
 
-# Configure Timeshift backup location and settings
-configure_timeshift() {
-    # Check if /home is a separate partition
-    if is_home_separate; then
-        backup_location="/home/timeshift"
-        echo "/home is a separate partition. Backups will be stored in /home."
-    else
-        backup_location="/timeshift"
-        echo "/home is not a separate partition. Backups will be stored in /."
-    fi
+# configure_timeshift() {
+#     # Check if /home is a separate partition
+#     if is_home_separate; then
+#         backup_device=$(lsblk -n -o MOUNTPOINT,NAME | grep "/home" | awk '{print $2}')
+#         backup_location="/home/timeshift"
+#         echo "/home is a separate partition. Backups will be stored in /home."
+#     else
+#         backup_device=$(lsblk -n -o MOUNTPOINT,NAME | grep "/$" | awk '{print $2}')
+#         backup_location="/timeshift"
+#         echo "/home is not a separate partition. Backups will be stored in /."
+#     fi
 
-    # Create the backup directory if it doesn't exist
-    sudo mkdir -p "$backup_location"
-    sudo chown root:root "$backup_location"
-    sudo chmod 755 "$backup_location"
+#     # Create the backup directory if it doesn't exist
+#     sudo mkdir -p "$backup_location"
+#     sudo chown root:root "$backup_location"
+#     sudo chmod 755 "$backup_location"
 
-    # Set the backup location in Timeshift
-    echo "Setting up Timeshift backup location to $backup_location..."
-    sudo timeshift --create --comments "Initial Backup" --tags "daily" --backup-device "$backup_location"
-    check_success "Timeshift initial backup setup"
+#     # Configure Timeshift for RSYNC mode
+#     echo "Configuring Timeshift to use RSYNC mode..."
+#     sudo timeshift --rsync
 
-    # Set the backup schedule (e.g., daily)
-    echo "Setting backup schedule to daily..."
-    sudo timeshift --schedule --add --daily
-    check_success "Daily backup schedule set"
+#     # Set the backup location explicitly
+#     echo "Setting up Timeshift backup location to /dev/$backup_device..."
+#     sudo timeshift --create --comments "Initial Backup" --tags "D" --backup-device "/dev/$backup_device"
+#     check_success "Timeshift initial backup setup"
 
-    # Set retention policy to keep 5 backups in total
-    echo "Setting backup retention policy to keep 5 backups..."
-    sudo timeshift --max-daily 5 --max-weekly 5 --max-monthly 5 --max-yearly 5
-    check_success "Backup retention policy set to keep 5 backups"
+#     # Set the backup schedule (e.g., daily)
+#     echo "Setting backup schedule to daily..."
+#     sudo timeshift --schedule --add --tags "D"
+#     check_success "Daily backup schedule set"
 
-    # Enable Timeshift for automatic backups (using systemd)
-    echo "Enabling Timeshift for automatic backups..."
-    sudo systemctl enable timeshift.timer
-    sudo systemctl start timeshift.timer
-    check_success "Timeshift automatic backup enabled"
-}
+#     # Set retention policy to keep 5 backups in total
+#     echo "Setting backup retention policy to keep 5 backups..."
+#     sudo timeshift --max-daily 5 --max-weekly 0 --max-monthly 0 --max-yearly 0
+#     check_success "Backup retention policy set to keep 5 daily backups"
+
+#     # Enable Timeshift for automatic backups (using systemd)
+#     echo "Enabling Timeshift for automatic backups..."
+#     sudo systemctl enable timeshift.timer
+#     sudo systemctl start timeshift.timer
+#     check_success "Timeshift automatic backup enabled"
+
+#     echo "Timeshift configuration completed successfully."
+# }
 
 # Function to detect if the system is using GRUB
 is_grub_installed() {
