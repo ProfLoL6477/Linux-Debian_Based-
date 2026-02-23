@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # AUTHOR  : Warad Teni
-# MOBILE  : (+91) 91463 50289
 # EMAIL   : waradteni@gmail.com
 
 #**************************************************************************************************************************************************************************#
@@ -328,12 +327,12 @@ else
     check_success "LibreWolf set as default browser"
 fi
 
-# Set Kitty as the default terminal emulator
-sudo update-alternatives --install /usr/bin/x-terminal-emulator kitty /usr/bin/kitty 1
-sudo update-alternatives --set x-terminal-emulator /usr/bin/kitty
+# # Set Kitty as the default terminal emulator
+# sudo update-alternatives --install /usr/bin/x-terminal-emulator kitty /usr/bin/kitty 1
+# sudo update-alternatives --set x-terminal-emulator /usr/bin/kitty
 
-# Add a fallback to ensure that the 'kitty' command works
-sudo update-alternatives --install /usr/bin/kitty kitty /usr/bin/kitty 1
+# # Add a fallback to ensure that the 'kitty' command works
+# sudo update-alternatives --install /usr/bin/kitty kitty /usr/bin/kitty 1
 
 # Set OnlyOffice as default for document types
 echo "Setting OnlyOffice as default for various document types..."
