@@ -51,7 +51,6 @@ This repository will be updated with more scripts to automate the installation o
 
 ## Author:
 **Name**: Warad Teni  
-**Mobile**: (+91) 91463 50289  
 **Email**: waradteni@gmail.com
 
 ## Contributing:
