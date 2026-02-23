@@ -2,7 +2,6 @@
 
 # System Update and Upgrade Script
 # AUTHOR  : Warad Teni
-# MOBILE  : (+91) 91463 50289
 # EMAIL   : waradteni@gmail.com
 
 #************************************************************************************#
