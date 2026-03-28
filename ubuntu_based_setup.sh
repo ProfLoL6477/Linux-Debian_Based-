@@ -357,12 +357,12 @@ sudo ufw enable
 check_success "GUFW firewall enabled"
 
 # Install and set up Grub Customizer
-# echo "Adding Grub Customizer PPA and installing..."
-# sudo add-apt-repository ppa:danielrichter2007/grub-customizer -y
-# sudo apt update
-# check_success "Grub Customizer PPA added"
-# sudo apt install grub-customizer -y
-# check_success "Grub Customizer installation"
+echo "Adding Grub Customizer PPA and installing..."
+sudo add-apt-repository ppa:danielrichter2007/grub-customizer -y
+sudo apt update
+check_success "Grub Customizer PPA added"
+sudo apt install grub-customizer -y
+check_success "Grub Customizer installation"
 
 # Remove unnecessary packages
 echo "Performing system cleanup..."
@@ -377,9 +377,9 @@ configure_timeshift
 
 # Launch Timeshift for manual gui setup
 if [[ $DISPLAY ]]; then
-    # echo "Launching Grub Customizer..."
-    # sudo grub-customizer
-    # check_success "Grub Customizer setup completed"
+    echo "Launching Grub Customizer..."
+    sudo grub-customizer
+    check_success "Grub Customizer setup completed"
     echo "Launching Timeshift GUI for initial setup..."
     sudo timeshift-gtk
     check_success "Timeshift GUI launched for configuration"
