@@ -265,12 +265,17 @@ check_success "Flathub Repository addition"
 # Pre-accept EULA for ubuntu-restricted-extras to avoid user interaction
 echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
 
-# Install Synaptic, VLC, Stacer, GParted, Kitty, Htop, Ranger, Vim, Neovim, Neofetch, Timeshift, GUFW, and Ubuntu Restricted Extras
-for package in synaptic vlc stacer gparted kitty htop ranger vim neovim neofetch timeshift gufw ubuntu-restricted-extras; do
+# Install Synaptic, VLC, Stacer, GParted, Kitty, Htop, Ranger, Vim, Neovim, Neofetch, Timeshift, GUFW, PavuControl, and Ubuntu Restricted Extras
+for package in synaptic gparted timeshift gufw pavucontrol vlc ubuntu-restricted-extras stacer htop ranger vim neovim neofetch kitty; do
     echo "Installing $package..."
     sudo nala install "$package" -y
     check_success "$package installation"
 done
+
+# Ensure PulseAudio compatibility layer for PipeWire systems (Ubuntu 22.04+ based distros)
+echo "Installing pipewire-pulse for PipeWire compatibility..."
+sudo nala install -y pipewire-pulse
+check_success "pipewire-pulse installation"
 
 # Install Brave browser
 echo "Installing Brave..."
